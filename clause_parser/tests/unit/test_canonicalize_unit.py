@@ -18,6 +18,7 @@ from clause_parser.src.canonicalize.canonicalizer import (
     canonicalize_text,
 )
 from clause_parser.src.canonicalize.document_registry import compute_checksum
+from shared_contracts.py.validation import validate
 
 
 def test_compute_checksum_matches_hashlib_sha256():
@@ -109,6 +110,47 @@ def test_last_article_span_does_not_swallow_a_trailing_annex():
     span_text = text[last_paragraph.char_start : last_paragraph.char_end]
     assert "Annex I" not in span_text
     assert "Illustrative Table" not in span_text
+
+
+def test_unmatched_structure_fallback_anchor_has_null_label_and_validates(tmp_path):
+    """Regression test for rabbitqa_spec_v1.1.0.md §12 changelog entry 1.1.1:
+    when no 'Article N' heading pattern is recognized anywhere in the source
+    text, build_structure()'s documented fallback produces a single top-level
+    anchor spanning the whole document with label=None (§2.1's anchor_node.label
+    is optional and MAY be null — same optionality pattern as parent_anchor_id —
+    not a data-quality gap). This must be schema-valid, not just
+    code-tolerated: a text/pdf source whose content never matches the
+    recognized heading pattern is a realistic input, not an edge case to avoid
+    hitting."""
+    text = canonicalize_text("This document has no recognized Article heading at all.")
+    structure = build_structure(text, document_id="doc_fallback1234", source_version="v1")
+
+    assert len(structure) == 1
+    anchor = structure[0]
+    assert anchor.label is None
+
+    payload = {
+        "document_id": "doc_fallback1234",
+        "source_version": "v1",
+        "instrument": "NIS2",
+        "checksum_sha256": "a" * 64,
+        "language": "en",
+        "jurisdiction": "EU",
+        "structure": [
+            {
+                "anchor_id": anchor.anchor_id,
+                "type": anchor.type,
+                "label": anchor.label,
+                "char_start": anchor.char_start,
+                "char_end": anchor.char_end,
+                "parent_anchor_id": anchor.parent_anchor_id,
+            }
+        ],
+        "raw_storage_uri": "file:///tmp/fixture.txt",
+        "created_at": "2026-09-02T00:00:00+00:00",
+        "schema_version": "1.1.0",
+    }
+    validate(payload, "CanonicalDocument.schema.json")  # must not raise
 
 
 def test_anchor_id_collision_raises_loudly_not_silently():

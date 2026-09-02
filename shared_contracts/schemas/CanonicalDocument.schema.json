@@ -36,7 +36,7 @@
       "properties": {
         "anchor_id": { "type": "string", "description": "Stable ID: {document_id}:{source_version}:{structural_path}" },
         "type": { "type": "string", "enum": ["article", "paragraph", "annex", "table", "footnote", "recital"] },
-        "label": { "type": "string", "description": "e.g. 'Article 21(2)(b)'" },
+        "label": { "type": ["string", "null"], "description": "e.g. 'Article 21(2)(b)'. MAY be null when no recognized structural label applies (e.g. a whole-document fallback anchor)." },
         "char_start": { "type": "integer", "minimum": 0 },
         "char_end": { "type": "integer", "minimum": 0 },
         "parent_anchor_id": { "type": ["string", "null"] }
