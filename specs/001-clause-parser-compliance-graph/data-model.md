@@ -1,6 +1,6 @@
 # Data Model: Clause Parser & Compliance Knowledge Graph
 
-Source of truth: `rabbitqa_spec_v1.0.0.md` §2 (Data Contracts) and §3 (Ontology). This document restates entities and relationships for implementation planning; the literal JSON Schemas live at `shared_contracts/schemas/*.json` and are authoritative over this summary.
+Source of truth: `rabbitqa_spec_v1.1.0.md` §2 (Data Contracts) and §3 (Ontology). This document restates entities and relationships for implementation planning; the literal JSON Schemas live at `shared_contracts/schemas/*.json` and are authoritative over this summary.
 
 ## 1. CanonicalDocument
 
@@ -35,7 +35,7 @@ One pinned, registered version of a regulatory source.
 Central entity — one atomic extracted legal requirement.
 
 ### 2.1 `identity`
-`document_id`, `source_version`, `language`, `jurisdiction` (const "EU"), `instrument` (enum), `clause_id` (pattern `^[^:]+:[^:]+:.+$` — structural shape only; semantically MUST be derived from identity + structural anchor, never from model output, enforced as a cross-field code invariant since JSON Schema can't express it; corrected from the root spec's originally-unmatchable literal pattern, see `rabbitqa_spec_v1.0.0.md` §12 changelog v1.0.1), `schema_version` (const "1.0.0"). All required.
+`document_id`, `source_version`, `language`, `jurisdiction` (const "EU"), `instrument` (enum), `clause_id` (pattern `^[^:]+:[^:]+:.+$` — structural shape only; semantically MUST be derived from identity + structural anchor, never from model output, enforced as a cross-field code invariant since JSON Schema can't express it; corrected from the root spec's originally-unmatchable literal pattern, see `rabbitqa_spec_v1.1.0.md` §12 changelog v1.0.1), `schema_version` (const "1.0.0"). All required.
 
 ### 2.2 `source_evidence`
 `anchor_id`, `char_start`, `char_end`, `verbatim_text` (exact substring of the CanonicalDocument at [char_start, char_end)), `evidence_hash` (sha256 of verbatim_text). All required.
@@ -143,7 +143,7 @@ Any proposal outside this table fails `constraint_report`. Extending it requires
 c-[:SATISFIED_BY]->(e:EvidenceRequirement)-[:EVIDENCED_BY]->(t:TestAsset)
 ```
 
-Corrected from the root spec's originally-unsatisfiable `regulation:Regulation` first hop — see `rabbitqa_spec_v1.0.0.md` §12 changelog v1.0.4. The `Provision` node's regulation context (`instrument`, `source_version`) is carried on its `properties`, not via a graph edge (§3.2 defines no `Provision`→`Regulation` relationship).
+Corrected from the root spec's originally-unsatisfiable `regulation:Regulation` first hop — see `rabbitqa_spec_v1.1.0.md` §12 changelog v1.0.4. The `Provision` node's regulation context (`instrument`, `source_version`) is carried on its `properties`, not via a graph edge (§3.2 defines no `Provision`→`Regulation` relationship).
 
 Every response includes, per path: `clause_id`, `verbatim_text`, `review_status`, `graph_snapshot_id`.
 

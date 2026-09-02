@@ -1,6 +1,6 @@
 """Step 3: Decompose.
 
-Per rabbitqa_spec_v1.0.0.md §4.1 step 3: split normative spans into atomic candidate
+Per rabbitqa_spec_v1.1.0.md §4.1 step 3: split normative spans into atomic candidate
 obligation spans, retaining shared conditions/exceptions via a parent_span_id link;
 record whether decomposition used a deterministic method or an LLM in governance
 metadata (FR-010).

@@ -1,4 +1,4 @@
-"""GET /v1/graph/snapshots/{id}, per rabbitqa_spec_v1.0.0.md §5.8:
+"""GET /v1/graph/snapshots/{id}, per rabbitqa_spec_v1.1.0.md §5.8:
 "Response 200: snapshot metadata + ontology_version + lineage
 (superseded_snapshot_id chain)."
 """

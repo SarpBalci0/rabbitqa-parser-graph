@@ -2,7 +2,7 @@
 
 Records are stored as validated JSON payloads (the JSON Schema files under
 shared_contracts/schemas/ remain the authoritative shape) alongside indexed lookup
-columns needed by the endpoints in rabbitqa_spec_v1.0.0.md §5.
+columns needed by the endpoints in rabbitqa_spec_v1.1.0.md §5.
 """
 
 from __future__ import annotations

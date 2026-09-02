@@ -1,6 +1,6 @@
 """Extraction Agent client.
 
-Per rabbitqa_spec_v1.0.0.md §4.4: context package (exactly) = one candidate span's
+Per rabbitqa_spec_v1.1.0.md §4.4: context package (exactly) = one candidate span's
 text + immediate structural anchor + controlled vocabulary list; output schema =
 ObligationObjectProposal subset (legal_semantics, source_evidence).
 

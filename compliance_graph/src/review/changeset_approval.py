@@ -1,4 +1,4 @@
-"""Change-set approval action, per rabbitqa_spec_v1.0.0.md §4.3/§9.1:
+"""Change-set approval action, per rabbitqa_spec_v1.1.0.md §4.3/§9.1:
 explicit reviewer approval is required before a validated change set can be
 published; no auto-publish path exists anywhere.
 """

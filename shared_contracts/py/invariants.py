@@ -1,5 +1,5 @@
 """Cross-field invariants that JSON Schema's `pattern` keyword cannot express
-(it has no way to reference a sibling property's value), per rabbitqa_spec_v1.0.0.md
+(it has no way to reference a sibling property's value), per rabbitqa_spec_v1.1.0.md
 §2.2. These run alongside shared_contracts.py.validation.validate() wherever an
 ObligationObject is persisted.
 """

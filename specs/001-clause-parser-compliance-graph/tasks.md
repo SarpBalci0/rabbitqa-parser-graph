@@ -9,7 +9,7 @@ description: "Task list for Clause Parser & Compliance Knowledge Graph"
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
 
-**Tests**: Included. The technical spec (`rabbitqa_spec_v1.0.0.md`, "How to use this spec during implementation") states: "§9's Given/When/Then blocks are the literal test names to write first (TDD-friendly by design)" — so contract and integration tests are mandatory, not optional, for this feature.
+**Tests**: Included. The technical spec (`rabbitqa_spec_v1.1.0.md`, "How to use this spec during implementation") states: "§9's Given/When/Then blocks are the literal test names to write first (TDD-friendly by design)" — so contract and integration tests are mandatory, not optional, for this feature.
 
 **Organization**: Tasks are grouped by user story (spec.md priorities) to enable independent implementation and testing of each story.
 

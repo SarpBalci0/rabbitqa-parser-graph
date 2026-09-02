@@ -1,6 +1,6 @@
 # API Contract: Clause Parser & Compliance Knowledge Graph
 
-Source: `rabbitqa_spec_v1.0.0.md` §5. All endpoints return `application/json`. Errors follow:
+Source: `rabbitqa_spec_v1.1.0.md` §5. All endpoints return `application/json`. Errors follow:
 
 ```json
 { "error": { "code": "string", "message": "string", "details": {} } }
@@ -19,7 +19,7 @@ Source: `rabbitqa_spec_v1.0.0.md` §5. All endpoints return `application/json`. 
 - 201: `CanonicalDocument`
 - 400: checksum cannot be computed
 - 200: re-posting content whose checksum matches an already-registered `(instrument, source_version)` returns the existing `CanonicalDocument` — idempotent by content.
-- 409: re-posting content whose checksum does NOT match an already-registered `(instrument, source_version)` — a pinned source_version is immutable once registered; register revised content under a new source_version instead. (Disambiguated in `rabbitqa_spec_v1.0.0.md` spec_version 1.0.2 — the original text stated both outcomes in one sentence without distinguishing the match/mismatch cases.)
+- 409: re-posting content whose checksum does NOT match an already-registered `(instrument, source_version)` — a pinned source_version is immutable once registered; register revised content under a new source_version instead. (Disambiguated in `rabbitqa_spec_v1.1.0.md` spec_version 1.0.2 — the original text stated both outcomes in one sentence without distinguishing the match/mismatch cases.)
 
 ## POST /v1/parse-jobs
 - Request: `{ "document_id": str, "source_version": str }`

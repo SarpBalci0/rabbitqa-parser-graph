@@ -1,6 +1,6 @@
 """Schema-validation helper for the normative JSON Schema contracts.
 
-Per rabbitqa_spec_v1.0.0.md §2 preamble: "Every object MUST include schema_version
+Per rabbitqa_spec_v1.1.0.md §2 preamble: "Every object MUST include schema_version
 and MUST be validated against its schema before being persisted or transmitted
 across a module boundary." This module is the single place that validation happens
 so no call site can silently skip it.

@@ -1,6 +1,6 @@
 """ConstraintReport production, against the resolved (interim)
 shared_contracts/schemas/ConstraintReport.schema.json — one rules[] entry per named
-rule from that schema's enum, per rabbitqa_spec_v1.0.0.md §2.4.
+rule from that schema's enum, per rabbitqa_spec_v1.1.0.md §2.4.
 """
 
 from __future__ import annotations

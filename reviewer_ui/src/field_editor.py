@@ -1,4 +1,4 @@
-"""Reviewer workspace structured field editor, per rabbitqa_spec_v1.0.0.md §6.2:
+"""Reviewer workspace structured field editor, per rabbitqa_spec_v1.1.0.md §6.2:
 "A structured editor with one input per legal_semantics field — free-text edits
 MUST be captured as a diff object attached to the resulting revision_history
 entry."

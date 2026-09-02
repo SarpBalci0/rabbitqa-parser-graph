@@ -1,6 +1,6 @@
 """Snapshot lineage modeling and the GraphStore interface.
 
-Per rabbitqa_spec_v1.0.0.md §2.5, §4.3, §5.7, §5.8:
+Per rabbitqa_spec_v1.1.0.md §2.5, §4.3, §5.7, §5.8:
 - Snapshots are immutable once published; a new publish creates a new snapshot and
   points its `superseded_snapshot_id` at the one it replaces (§5.8 lineage chain).
 - Publish is a single all-or-nothing transaction (§4.3 Deterministic publisher).
@@ -62,7 +62,7 @@ class GraphStore(Protocol):
 
     def query_proof_path(self, snapshot_id: str) -> list[dict[str, Any]]:
         """§3.3 canonical proof-path (spec_version 1.0.4 pattern, starting at
-        Provision — see rabbitqa_spec_v1.0.0.md §12 changelog). Returns raw graph
+        Provision — see rabbitqa_spec_v1.1.0.md §12 changelog). Returns raw graph
         results only: {clause_id, path, graph_snapshot_id} — verbatim_text and
         review_status are NOT graph properties (the Obligation node only carries
         clause_id+norm_type per §3.1); enrichment from the ObligationObject store

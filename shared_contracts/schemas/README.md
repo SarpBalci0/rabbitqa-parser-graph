@@ -1,7 +1,7 @@
 # shared_contracts/schemas
 
 These JSON Schema (draft 2020-12) files are the normative source of truth for RabbitQA's
-Clause Parser & Compliance Knowledge Graph data contracts, per `rabbitqa_spec_v1.0.0.md` §0
+Clause Parser & Compliance Knowledge Graph data contracts, per `rabbitqa_spec_v1.1.0.md` §0
 and §2. They MUST be validated against, never hand-diverged from, and never regenerated
 from code — code is generated/checked against them, not the other way around.
 

@@ -11,7 +11,7 @@ root so they share data). Run with:
 
 Note: there is no REST endpoint for CREATING a GraphChangeSet — the root spec's
 §5 never defines one (the Graph Mapping Agent is invoked directly, not exposed
-over HTTP; see rabbitqa_spec_v1.0.0.md §4.4). Propose a change set with a short
+over HTTP; see rabbitqa_spec_v1.1.0.md §4.4). Propose a change set with a short
 Python snippet (see the walkthrough), then use this service's
 POST .../validate and POST .../publish endpoints on the resulting changeset_id.
 """

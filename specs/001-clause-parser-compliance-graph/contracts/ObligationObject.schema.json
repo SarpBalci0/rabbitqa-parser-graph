@@ -15,7 +15,7 @@
         "jurisdiction": { "type": "string", "const": "EU" },
         "instrument": { "type": "string", "enum": ["NIS2", "CRA", "DORA"] },
         "clause_id": { "type": "string", "pattern": "^[^:]+:[^:]+:.+$",
-                       "description": "MUST be derived from identity + structural anchor, never from model output. Syntactic shape only: two non-empty colon-delimited segments (document_id, source_version) followed by a structural-path suffix. JSON Schema's pattern keyword cannot reference a sibling property's value, so the semantic requirement — that the first two segments equal this record's own document_id and source_version — is a cross-field invariant, enforced in code (shared_contracts/py/invariants.py:assert_clause_id_derivation), analogous to the evidence-replay invariant in §2.2's numbered list (also cross-field). Matches rabbitqa_spec_v1.0.0.md as of spec_version 1.0.1 (§12 changelog)." },
+                       "description": "MUST be derived from identity + structural anchor, never from model output. Syntactic shape only: two non-empty colon-delimited segments (document_id, source_version) followed by a structural-path suffix. JSON Schema's pattern keyword cannot reference a sibling property's value, so the semantic requirement — that the first two segments equal this record's own document_id and source_version — is a cross-field invariant, enforced in code (shared_contracts/py/invariants.py:assert_clause_id_derivation), analogous to the evidence-replay invariant in §2.2's numbered list (also cross-field). Matches rabbitqa_spec_v1.1.0.md as of spec_version 1.0.1 (§12 changelog)." },
         "schema_version": { "type": "string", "const": "1.0.0" }
       }
     },

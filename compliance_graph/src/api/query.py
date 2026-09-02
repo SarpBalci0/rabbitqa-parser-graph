@@ -1,4 +1,4 @@
-"""POST /v1/graph/query, per rabbitqa_spec_v1.0.0.md §5.9:
+"""POST /v1/graph/query, per rabbitqa_spec_v1.1.0.md §5.9:
 "Rule: querying a snapshot_id that is not fully published (i.e. still draft/
 validated/approved) MUST return 404, not partial data."
 

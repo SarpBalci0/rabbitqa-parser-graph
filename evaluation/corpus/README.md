@@ -2,7 +2,7 @@
 
 **This corpus is SYNTHETIC and ILLUSTRATIVE — it is NOT real NIS2/CRA/DORA text.**
 
-`rabbitqa_spec_v1.0.0.md` §10 Q3 ("Confirm the exact NIS2/CRA/DORA article subset
+`rabbitqa_spec_v1.1.0.md` §10 Q3 ("Confirm the exact NIS2/CRA/DORA article subset
 to pin for v1 corpus") remains genuinely open — `spec.md`'s resolved clarification
 settled the *scope* ("a bounded subset," not the full instrument) but the specific
 enumerated article list was explicitly left to a Regulatory SME owner (see

@@ -43,7 +43,7 @@
     "superseded_assertions": { "type": "array", "items": { "type": "string" } },
     "constraint_report": {
       "$ref": "ConstraintReport.schema.json",
-      "$comment": "ConstraintReport.schema.json is an INTERIM contract (see that file's own $comment) — not defined in rabbitqa_spec_v1.0.0.md itself. Confirm against a spec update before treating as final."
+      "$comment": "ConstraintReport.schema.json is an INTERIM contract (see that file's own $comment) — not defined in rabbitqa_spec_v1.1.0.md itself. Confirm against a spec update before treating as final."
     },
     "status": { "type": "string", "enum": ["draft", "validated", "approved", "rejected", "published"] }
   }

@@ -1,6 +1,6 @@
 """Step 5: Resolve.
 
-Per rabbitqa_spec_v1.0.0.md §4.1 step 5: deterministic normalizers (dates/
+Per rabbitqa_spec_v1.1.0.md §4.1 step 5: deterministic normalizers (dates/
 quantities) + Reference Agent-backed reference resolution, populating the
 `references` block and normalizing legal_semantics.deadline.normalized_iso.
 """

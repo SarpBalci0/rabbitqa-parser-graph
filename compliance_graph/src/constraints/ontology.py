@@ -1,4 +1,4 @@
-"""Ontology reference tables, per rabbitqa_spec_v1.0.0.md §3.1/§3.2 (mirrored
+"""Ontology reference tables, per rabbitqa_spec_v1.1.0.md §3.1/§3.2 (mirrored
 exactly in data-model.md §6.1/§6.2). This module is the single source of truth the
 constraints engine (engine.py) validates every GraphChangeSet against — the node
 type list, required-properties map, and the exhaustive relationship allow-list are

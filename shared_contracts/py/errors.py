@@ -1,4 +1,4 @@
-"""Standard API error envelope and exception types, per rabbitqa_spec_v1.0.0.md §5.
+"""Standard API error envelope and exception types, per rabbitqa_spec_v1.1.0.md §5.
 
 Error body shape: {"error": {"code": str, "message": str, "details": {}}}
 Reused by both clause_parser's and compliance_graph's FastAPI apps.

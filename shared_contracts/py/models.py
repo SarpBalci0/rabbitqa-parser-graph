@@ -1,7 +1,7 @@
 """Pydantic models mirroring the literal JSON Schema contracts under shared_contracts/schemas/.
 
 These are used for API (de)serialization convenience only. Validation against the literal
-schema files (see validation.py) remains authoritative per rabbitqa_spec_v1.0.0.md §2 —
+schema files (see validation.py) remains authoritative per rabbitqa_spec_v1.1.0.md §2 —
 a payload that passes Pydantic construction is still schema-validated before persistence
 or transmission across a module boundary.
 """

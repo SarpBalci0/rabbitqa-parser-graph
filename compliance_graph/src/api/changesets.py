@@ -1,5 +1,5 @@
 """POST /v1/graph/changesets/{id}/validate and POST .../publish, per
-rabbitqa_spec_v1.0.0.md §5.6/§5.7.
+rabbitqa_spec_v1.1.0.md §5.6/§5.7.
 
 §5.6: "Response 200: ConstraintReport (embedded per §2.4). Does not mutate graph
 state." Note: this endpoint DOES mutate the changeset's own status (draft->

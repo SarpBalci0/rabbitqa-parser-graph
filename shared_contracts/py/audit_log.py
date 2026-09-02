@@ -1,6 +1,6 @@
 """Append-only audit/decision-history persistence primitive.
 
-Per rabbitqa_spec_v1.0.0.md §7 (Graph & registries zone: "audit events are
+Per rabbitqa_spec_v1.1.0.md §7 (Graph & registries zone: "audit events are
 append-only (no update/delete grants on the audit table)") and FR-036.
 
 This module intentionally exposes no update/delete method at all — not "update

@@ -1,6 +1,6 @@
 """Step 2: Detect (deterministic baseline).
 
-Per rabbitqa_spec_v1.0.0.md §4.1 step 2: "Deterministic classifier baseline
+Per rabbitqa_spec_v1.1.0.md §4.1 step 2: "Deterministic classifier baseline
 REQUIRED; LLM-assisted refinement MAY be layered on top but the deterministic
 pass MUST run first and its output MUST be logged separately."
 

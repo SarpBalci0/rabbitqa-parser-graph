@@ -1,4 +1,4 @@
-"""Transactional publisher, per rabbitqa_spec_v1.0.0.md §5.7/§4.3.
+"""Transactional publisher, per rabbitqa_spec_v1.1.0.md §5.7/§4.3.
 
 Preconditions (all MUST hold or 409):
 - changeset.status == "approved"

@@ -1,4 +1,4 @@
-"""Agent-call logging per rabbitqa_spec_v1.0.0.md §7 LLM gateway zone:
+"""Agent-call logging per rabbitqa_spec_v1.1.0.md §7 LLM gateway zone:
 "every agent call logs {model_version, prompt_version, input_hash, output_hash,
 context_hash}"."""
 

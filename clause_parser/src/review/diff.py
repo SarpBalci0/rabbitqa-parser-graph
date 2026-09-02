@@ -1,4 +1,4 @@
-"""Diff capture for free-text field edits, per rabbitqa_spec_v1.0.0.md §6.2:
+"""Diff capture for free-text field edits, per rabbitqa_spec_v1.1.0.md §6.2:
 "free-text edits MUST be captured as a diff object attached to the resulting
 revision_history entry."
 

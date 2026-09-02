@@ -1,4 +1,4 @@
-"""GET /v1/clauses/{id}/parse-revisions, per rabbitqa_spec_v1.0.0.md §5.4:
+"""GET /v1/clauses/{id}/parse-revisions, per rabbitqa_spec_v1.1.0.md §5.4:
 "array of {ObligationObjectProposal, ValidationReport, revision_history} ordered
 oldest-first."
 """

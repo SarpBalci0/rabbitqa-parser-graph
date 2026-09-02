@@ -1,6 +1,6 @@
 """Neo4j connection/session management for the compliance graph.
 
-Per rabbitqa_spec_v1.0.0.md §4.3 (Deterministic publisher: "Apply an approved
+Per rabbitqa_spec_v1.1.0.md §4.3 (Deterministic publisher: "Apply an approved
 GraphChangeSet as a single transaction; on any failure, roll back completely...
 there is no partial-success state") and §7 (Graph & registries zone: "All graph
 mutations are transactional; constraint checks run inside the same transaction

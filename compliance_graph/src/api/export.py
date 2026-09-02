@@ -1,4 +1,4 @@
-"""GET /v1/graph/snapshots/{id}/export, per rabbitqa_spec_v1.0.0.md §5.10:
+"""GET /v1/graph/snapshots/{id}/export, per rabbitqa_spec_v1.1.0.md §5.10:
 "Response 200: GraphSnapshotExport, schema-validated before being returned."
 """
 

@@ -1,4 +1,4 @@
-"""Provenance-chain resolver, per rabbitqa_spec_v1.0.0.md §7:
+"""Provenance-chain resolver, per rabbitqa_spec_v1.1.0.md §7:
 
 "source checksum -> CanonicalDocument.document_id -> parse job run_id + agent
 run_ids (per agent, with model/prompt hashes) -> ValidationReport -> reviewer

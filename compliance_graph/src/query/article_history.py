@@ -1,4 +1,4 @@
-"""Prior-article-version history resolution, per rabbitqa_spec_v1.0.0.md §6.5:
+"""Prior-article-version history resolution, per rabbitqa_spec_v1.1.0.md §6.5:
 "Prior-revision history: ... and, separately, for prior versions of the source
 regulation article if superseded."
 

@@ -3,7 +3,7 @@
 Resolves the storage-layer gap flagged in plan.md's Technical Context ("Storage")
 and Complexity Tracking table — CanonicalDocument, ObligationObject, ValidationReport,
 and GraphChangeSet need somewhere to live before graph publish. Single-tenant, local
-deployment (rabbitqa_spec_v1.0.0.md §1.2) makes SQLite-via-SQLAlchemy a reasonable
+deployment (rabbitqa_spec_v1.1.0.md §1.2) makes SQLite-via-SQLAlchemy a reasonable
 default; RABBITQA_DB_URL can point at PostgreSQL for a non-local deployment without
 changing any repository code.
 """

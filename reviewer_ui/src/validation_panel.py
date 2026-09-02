@@ -1,5 +1,5 @@
 """Reviewer workspace validator findings/confidence panel, per
-rabbitqa_spec_v1.0.0.md §6.3: "Validator findings and per-field confidence
+rabbitqa_spec_v1.1.0.md §6.3: "Validator findings and per-field confidence
 displayed before the reviewer can submit a decision (MUST NOT allow 'accept' to be
 submitted without the ValidationReport having been fetched and rendered in the
 same session — this is a UX-level MUST, not enforceable server-side, but the

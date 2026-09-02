@@ -1,4 +1,4 @@
-"""Prompt-injection boundary helper per rabbitqa_spec_v1.0.0.md §4.4:
+"""Prompt-injection boundary helper per rabbitqa_spec_v1.1.0.md §4.4:
 
 "source document text passed to any agent MUST be wrapped as a clearly delimited
 untrusted data block in the context package..., and the system/instruction prompt

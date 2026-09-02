@@ -1,6 +1,6 @@
 """Enforces the zero-write-capable-tools rule for every agent call.
 
-Per rabbitqa_spec_v1.0.0.md §4.4 / §7: "Agents MUST NOT be given tool access to:
+Per rabbitqa_spec_v1.1.0.md §4.4 / §7: "Agents MUST NOT be given tool access to:
 database writes, graph writes, shell execution, or unrestricted network calls...
 enforced at the gateway level... not merely instructed via prompt."
 

@@ -6,9 +6,9 @@
 
 **Status**: Draft
 
-**Input**: User description: "Build the RabbitQA Clause Parser and Compliance Knowledge Graph standalone module pair, exactly as defined in rabbitqa_spec_v1.0.0.md in this repo. Read that file first and treat it as the normative source of truth: implement the CanonicalDocument, ObligationObject, ValidationReport, GraphChangeSet, and GraphSnapshotExport data contracts (section 2), the ontology (section 3), the clause parser processing sequence (section 4.1), the compliance graph module (section 4.3), the agent I/O contracts (section 4.4), the API endpoints (section 5), and the acceptance criteria (section 9) precisely as specified. Do not invent behavior not covered in the spec — flag gaps instead of guessing."
+**Input**: User description: "Build the RabbitQA Clause Parser and Compliance Knowledge Graph standalone module pair, exactly as defined in rabbitqa_spec_v1.1.0.md in this repo. Read that file first and treat it as the normative source of truth: implement the CanonicalDocument, ObligationObject, ValidationReport, GraphChangeSet, and GraphSnapshotExport data contracts (section 2), the ontology (section 3), the clause parser processing sequence (section 4.1), the compliance graph module (section 4.3), the agent I/O contracts (section 4.4), the API endpoints (section 5), and the acceptance criteria (section 9) precisely as specified. Do not invent behavior not covered in the spec — flag gaps instead of guessing."
 
-**Normative source**: `rabbitqa_spec_v1.0.0.md` (spec_version 1.0.3 as of this revision — see that document's own §0 Document Control table and §12 Changelog for the current authoritative version; this citation is not re-updated on every patch, so always defer to the root spec itself). Where this document and that spec appear to disagree, the technical spec wins; this document restates its intent for planning purposes and does not override it.
+**Normative source**: `rabbitqa_spec_v1.1.0.md` (spec_version 1.0.3 as of this revision — see that document's own §0 Document Control table and §12 Changelog for the current authoritative version; this citation is not re-updated on every patch, so always defer to the root spec itself). Where this document and that spec appear to disagree, the technical spec wins; this document restates its intent for planning purposes and does not override it.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -97,7 +97,7 @@ An external stakeholder or downstream system requests a read-only export of a pu
 ### Edge Cases
 
 - What happens when the same source document is registered under two different declared source versions? (Treated as distinct pinned versions — each gets its own identity; this is not a duplicate.)
-- What happens when different content is registered under an instrument/source_version combination that's already registered with different content? (Rejected as a conflict — a pinned source_version is immutable once registered; revised content requires registering under a new source_version. Added in `rabbitqa_spec_v1.0.0.md` spec_version 1.0.2, §12 changelog.)
+- What happens when different content is registered under an instrument/source_version combination that's already registered with different content? (Rejected as a conflict — a pinned source_version is immutable once registered; revised content requires registering under a new source_version. Added in `rabbitqa_spec_v1.1.0.md` spec_version 1.0.2, §12 changelog.)
 - How does the system handle a parse job for a document that contains no detectable normative passages? (Job completes with zero proposals rather than failing.)
 - What happens when a reviewer attempts to accept a record without ever having viewed its validation findings in the same session? (The UI must prevent this, but the system independently re-validates on submission regardless of what was shown, so a bypassed UI check cannot result in an unvalidated acceptance.)
 - How does the system handle a graph change-set proposal that references a node not present in either the proposal itself or the already-published graph? (Treated as a validation failure — the relationship is not created.)
@@ -195,7 +195,7 @@ An external stakeholder or downstream system requests a read-only export of a pu
 
 ## Resolved Clarifications
 
-The technical spec (`rabbitqa_spec_v1.0.0.md`, §10) marked the following as blocking open questions. They have been resolved for this feature:
+The technical spec (`rabbitqa_spec_v1.1.0.md`, §10) marked the following as blocking open questions. They have been resolved for this feature:
 
 - **Graph storage/query technology**: Neo4j (Cypher-style property-graph traversal), matching the technical spec's §3.3 reference proof-path query as written — no restatement of that query needed.
 - **Evaluation corpus scope**: A bounded, representative subset of NIS2/CRA/DORA articles (not the full instrument), including hard negatives, nested conditions, annex tables, long cross-references, and at least one amendment scenario per §9.3, rather than the entire regulation text.

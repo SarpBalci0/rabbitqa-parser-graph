@@ -1,6 +1,6 @@
 # Research: Clause Parser & Compliance Knowledge Graph
 
-All decisions below are constrained by `rabbitqa_spec_v1.0.0.md` (normative) and `spec.md`'s resolved clarifications. Where the technical spec dictates a choice, that choice is not re-litigated here — only genuinely open implementation questions are researched.
+All decisions below are constrained by `rabbitqa_spec_v1.1.0.md` (normative) and `spec.md`'s resolved clarifications. Where the technical spec dictates a choice, that choice is not re-litigated here — only genuinely open implementation questions are researched.
 
 ## 1. Language & runtime
 

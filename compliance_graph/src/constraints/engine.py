@@ -1,5 +1,5 @@
 """Constraints engine: ontology + cardinality + provenance checks, per
-rabbitqa_spec_v1.0.0.md §2.4 and §3.2.
+rabbitqa_spec_v1.1.0.md §2.4 and §3.2.
 
 "Run ontology + cardinality + provenance checks (§2.4)... MUST NOT: Skip
 validation for changesets flagged 'small' or 'obvious' — every changeset is

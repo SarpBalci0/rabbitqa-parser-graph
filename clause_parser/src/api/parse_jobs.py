@@ -1,4 +1,4 @@
-"""POST /v1/parse-jobs and GET /v1/parse-jobs/{id}, per rabbitqa_spec_v1.0.0.md §5.2/§5.3.
+"""POST /v1/parse-jobs and GET /v1/parse-jobs/{id}, per rabbitqa_spec_v1.1.0.md §5.2/§5.3.
 
 This is async per §5.2 ("Response 202: {job_id, status: queued}. This is async.").
 The job runner here executes synchronously but immediately, updating job state as it

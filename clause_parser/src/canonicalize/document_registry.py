@@ -1,6 +1,6 @@
 """Checksum computation + content-based idempotent document registration.
 
-Per rabbitqa_spec_v1.0.0.md FR-001/FR-002 and §9.1 Ingestion scenario: registering
+Per rabbitqa_spec_v1.1.0.md FR-001/FR-002 and §9.1 Ingestion scenario: registering
 byte-identical content twice for the same instrument resolves to the same
 document_id; the second call is a lookup, not a new record.
 """

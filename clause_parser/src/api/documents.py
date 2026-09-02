@@ -1,6 +1,6 @@
 """POST /v1/documents endpoint.
 
-Per rabbitqa_spec_v1.0.0.md §5.1 (spec_version 1.0.2) and §7 Document ingress zone:
+Per rabbitqa_spec_v1.1.0.md §5.1 (spec_version 1.0.2) and §7 Document ingress zone:
 reject uploads exceeding a configured size limit; validate content-type against an
 allow-list; run malware scan before persisting; compute checksum before any parsing
 step touches the content.

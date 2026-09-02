@@ -1,6 +1,6 @@
 """Explicit, configuration-driven model-provider allow-list.
 
-Per rabbitqa_spec_v1.0.0.md §7 LLM gateway zone: "Model provider is selected from an
+Per rabbitqa_spec_v1.1.0.md §7 LLM gateway zone: "Model provider is selected from an
 explicit allow-list (no arbitrary endpoint)". The concrete provider identity is an open
 item (spec §10 Q2, research.md §5) left to Engineering — this module only enforces that
 whatever is configured must be on the allow-list; it never accepts an arbitrary endpoint

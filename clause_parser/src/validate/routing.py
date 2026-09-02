@@ -1,4 +1,4 @@
-"""Fail/needs_review routing rule, per rabbitqa_spec_v1.0.0.md §2.3:
+"""Fail/needs_review routing rule, per rabbitqa_spec_v1.1.0.md §2.3:
 
 "any fail on evidence_span_fidelity or schema_validity forces overall_status = fail
 and the record MUST NOT be presentable to a reviewer for accept/edit — it routes to

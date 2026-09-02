@@ -1,4 +1,4 @@
-"""Export builder, per rabbitqa_spec_v1.0.0.md §2.5 and §7:
+"""Export builder, per rabbitqa_spec_v1.1.0.md §2.5 and §7:
 
 "GraphSnapshotExport MUST only ever be produced from a snapshot whose every
 included obligation has review_status in {accepted, edited}. Exporting from a

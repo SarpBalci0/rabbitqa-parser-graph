@@ -1,4 +1,4 @@
-"""§3.3 proof-path query and a 'coverage' pattern, per rabbitqa_spec_v1.0.0.md
+"""§3.3 proof-path query and a 'coverage' pattern, per rabbitqa_spec_v1.1.0.md
 §5.9: "Every query response MUST include, per path: clause_id, verbatim_text (from
 evidence), review_status, graph_snapshot_id."
 

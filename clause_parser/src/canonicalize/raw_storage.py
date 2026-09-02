@@ -1,6 +1,6 @@
 """Write-once raw artifact storage.
 
-Per rabbitqa_spec_v1.0.0.md §2.1 invariant: "raw_storage_uri content MUST be
+Per rabbitqa_spec_v1.1.0.md §2.1 invariant: "raw_storage_uri content MUST be
 write-once. Any write attempt to an existing key MUST fail."
 """
 

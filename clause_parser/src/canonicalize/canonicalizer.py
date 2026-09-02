@@ -1,6 +1,6 @@
 """Step 1: Canonicalize. Deterministic, no LLM.
 
-Per rabbitqa_spec_v1.0.0.md §4.1 step 1 and §2.1 invariants:
+Per rabbitqa_spec_v1.1.0.md §4.1 step 1 and §2.1 invariants:
 - Canonicalization normalizes whitespace/encoding only; it MUST NOT alter legal
   text content.
 - anchor_id generation MUST be a pure function of (document_id, source_version,

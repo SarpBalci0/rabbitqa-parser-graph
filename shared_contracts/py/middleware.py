@@ -1,4 +1,4 @@
-"""Request tracing middleware per rabbitqa_spec_v1.0.0.md §7 Workflow service zone:
+"""Request tracing middleware per rabbitqa_spec_v1.1.0.md §7 Workflow service zone:
 - every mutating request carries an idempotency key
 - rate limits enforced per client
 - every request is trace-tagged; trace_id propagates into every downstream log line

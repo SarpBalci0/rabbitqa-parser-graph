@@ -1,6 +1,6 @@
 """Reference Agent client.
 
-Per rabbitqa_spec_v1.0.0.md §4.4: context = resolved-definitions index for the
+Per rabbitqa_spec_v1.1.0.md §4.4: context = resolved-definitions index for the
 pinned source version + candidate reference mentions; output =
 {"candidates": [{"mention": str, "target_anchor_id": str, "confidence": float}]}.
 

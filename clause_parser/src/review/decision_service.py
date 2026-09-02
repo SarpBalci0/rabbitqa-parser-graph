@@ -1,6 +1,6 @@
 """Reviewer decision application: accept, edit, reject, escalate.
 
-Per rabbitqa_spec_v1.0.0.md §5.5 and §9.1 Review scenarios:
+Per rabbitqa_spec_v1.1.0.md §5.5 and §9.1 Review scenarios:
 - rationale MUST be non-empty (400 otherwise) — FR-015.
 - edit REQUIRES non-null edits and MUST re-run ValidationReport on the edited
   version before persisting — an edit that fails evidence-span fidelity is

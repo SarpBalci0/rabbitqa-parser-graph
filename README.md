@@ -1,6 +1,6 @@
 # RabbitQA — Clause Parser & Compliance Knowledge Graph
 
-Standalone module pair implementing `rabbitqa_spec_v1.0.0.md` (spec_version 1.0.4).
+Standalone module pair implementing `rabbitqa_spec_v1.1.0.md` (spec_version 1.0.4).
 See `CLAUDE.md` for the spec authority hierarchy governing this repository.
 
 ## Modules
@@ -62,7 +62,7 @@ dependency); the live-Neo4j test exists specifically to close the gap between
 that test double and real Cypher execution, and self-skips safely when no live
 server is reachable.
 
-## Resolved spec issues (see `rabbitqa_spec_v1.0.0.md` §12 for full detail)
+## Resolved spec issues (see `rabbitqa_spec_v1.1.0.md` §12 for full detail)
 
 Four real defects/gaps were found in the root spec during implementation and
 corrected there first, per this repo's rule that the root spec is fixed before

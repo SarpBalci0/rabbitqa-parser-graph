@@ -1,4 +1,4 @@
-"""Runnable CLI reviewer workspace, per rabbitqa_spec_v1.0.0.md §6 ("however
+"""Runnable CLI reviewer workspace, per rabbitqa_spec_v1.1.0.md §6 ("however
 implemented — web form or CLI"). Ties together source_pane.py, validation_panel.py,
 field_editor.py, and history_view.py into one scriptable command against the same
 shared SQLite store the two FastAPI services use.

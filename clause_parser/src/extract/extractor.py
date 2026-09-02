@@ -2,7 +2,7 @@
 
 Calls the Extraction Agent and assembles a full ObligationObjectProposal (identity +
 source_evidence + legal_semantics + references stub + governance stub), per
-rabbitqa_spec_v1.0.0.md §4.1 step 4 and §2.2. clause_id is derived purely from
+rabbitqa_spec_v1.1.0.md §4.1 step 4 and §2.2. clause_id is derived purely from
 identity + structural anchor here — never taken from agent output (§2.2 identity
 description, and the assert_clause_id_derivation invariant this must satisfy).
 """

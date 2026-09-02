@@ -1,4 +1,4 @@
-"""Export-boundary logging: signed request manifest, per rabbitqa_spec_v1.0.0.md §7
+"""Export-boundary logging: signed request manifest, per rabbitqa_spec_v1.1.0.md §7
 Export boundary zone: "export requests are logged with a signed request manifest."
 """
 

@@ -1,4 +1,4 @@
-"""POST /v1/reviews/{revision}/decisions, per rabbitqa_spec_v1.0.0.md §5.5.
+"""POST /v1/reviews/{revision}/decisions, per rabbitqa_spec_v1.1.0.md §5.5.
 
 Rules: rationale MUST be non-empty (400 otherwise). edit action REQUIRES non-null
 edits and MUST re-run ValidationReport on the edited version before persisting — an

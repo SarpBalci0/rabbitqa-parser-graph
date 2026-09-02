@@ -1,5 +1,5 @@
 """Entity resolution: match extracted actors/objects to existing Actor/Asset nodes
-by fuzzy+exact match with a confidence score, per rabbitqa_spec_v1.0.0.md §4.3.
+by fuzzy+exact match with a confidence score, per rabbitqa_spec_v1.1.0.md §4.3.
 
 MUST NOT: "Auto-merge nodes above a threshold without a reviewer decision recorded."
 This module therefore only ever PROPOSES matches with a confidence score — it never

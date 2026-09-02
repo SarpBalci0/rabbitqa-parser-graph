@@ -1,4 +1,4 @@
-"""Reviewer workspace source pane, per rabbitqa_spec_v1.0.0.md §6.1:
+"""Reviewer workspace source pane, per rabbitqa_spec_v1.1.0.md §6.1:
 "Source pane showing the verbatim source text with the current proposal's evidence
 span highlighted, and the stable anchor label visible."
 

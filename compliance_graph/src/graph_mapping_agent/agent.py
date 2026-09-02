@@ -1,6 +1,6 @@
 """Graph Mapping Agent client.
 
-Per rabbitqa_spec_v1.0.0.md §4.4: context = one or more approved ObligationObject(s)
+Per rabbitqa_spec_v1.1.0.md §4.4: context = one or more approved ObligationObject(s)
 + current ontology + a fixture of controls/assets/evidence; output = GraphChangeSet
 (draft status, pre-constraint-check).
 
@@ -169,7 +169,7 @@ def propose_change_set(
                     "label": source_evidence["anchor_id"],
                     # Regulation context carried on the Provision node's own
                     # properties rather than via a graph edge, per
-                    # rabbitqa_spec_v1.0.0.md §3.3 (spec_version 1.0.4 clarification)
+                    # rabbitqa_spec_v1.1.0.md §3.3 (spec_version 1.0.4 clarification)
                     # — §3.2 defines no Provision->Regulation relationship.
                     "instrument": identity["instrument"],
                     "source_version": identity["source_version"],

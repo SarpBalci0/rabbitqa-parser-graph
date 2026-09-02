@@ -1,4 +1,4 @@
-"""Reviewer workspace prior-revision history view, per rabbitqa_spec_v1.0.0.md
+"""Reviewer workspace prior-revision history view, per rabbitqa_spec_v1.1.0.md
 §6.5: "Prior-revision history: reviewer identity, timestamp, decision, and
 rationale for every past revision of the clause and, separately, for prior
 versions of the source regulation article if superseded."
