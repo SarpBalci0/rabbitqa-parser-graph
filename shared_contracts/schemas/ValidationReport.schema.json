@@ -1,0 +1,26 @@
+{
+  "$id": "ValidationReport.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["target_clause_id", "run_id", "checks", "overall_status"],
+  "properties": {
+    "target_clause_id": { "type": "string" },
+    "run_id": { "type": "string" },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_name", "status", "message"],
+        "properties": {
+          "check_name": { "type": "string", "enum": [
+            "schema_validity", "controlled_vocabulary", "evidence_span_fidelity",
+            "date_normalization", "quantity_normalization", "reference_validity",
+            "cross_field_consistency" ] },
+          "status": { "type": "string", "enum": ["pass", "fail", "warn"] },
+          "message": { "type": "string" }
+        }
+      }
+    },
+    "overall_status": { "type": "string", "enum": ["pass", "fail", "needs_review"] }
+  }
+}

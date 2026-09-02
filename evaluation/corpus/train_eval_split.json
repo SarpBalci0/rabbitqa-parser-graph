@@ -1,0 +1,16 @@
+{
+  "$comment": "Locked train/eval split over synthetic_instrument_v1.txt's clause structural_paths, per §9.3 ('no eval clause ever used in prompt few-shot examples'). This pipeline's current agents are fixture/rule-based (no live LLM, no few-shot prompting — see clause_parser/src/agents/*.py), so the few-shot leakage risk this split guards against does not yet apply in practice, but the split is locked now so it's ready when a real, prompted model replaces the fixtures.",
+  "train": [
+    "article-1/paragraph-1",
+    "article-2/paragraph-1",
+    "article-3/paragraph-1"
+  ],
+  "eval": [
+    "article-1/paragraph-2",
+    "article-1/paragraph-3",
+    "article-2/paragraph-2",
+    "article-2/paragraph-3",
+    "article-3/paragraph-2",
+    "article-4/paragraph-1"
+  ]
+}

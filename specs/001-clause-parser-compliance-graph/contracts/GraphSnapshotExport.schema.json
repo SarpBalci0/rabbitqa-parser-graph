@@ -1,0 +1,31 @@
+{
+  "$id": "GraphSnapshotExport.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["snapshot_id", "ontology_version", "valid_from", "obligations", "schema_version"],
+  "properties": {
+    "snapshot_id": { "type": "string" },
+    "ontology_version": { "type": "string" },
+    "valid_from": { "type": "string", "format": "date" },
+    "superseded_snapshot_id": { "type": ["string", "null"] },
+    "obligations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["clause_id", "obligation_node_id", "mapped_controls", "mapped_evidence",
+                     "review_status", "source_anchor", "confidence"],
+        "properties": {
+          "clause_id": { "type": "string" },
+          "obligation_node_id": { "type": "string" },
+          "mapped_controls": { "type": "array", "items": { "type": "string" } },
+          "mapped_assets": { "type": "array", "items": { "type": "string" } },
+          "mapped_evidence": { "type": "array", "items": { "type": "string" } },
+          "review_status": { "type": "string" },
+          "source_anchor": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "schema_version": { "type": "string", "const": "1.0.0" }
+  }
+}

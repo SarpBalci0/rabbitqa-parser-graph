@@ -1,0 +1,36 @@
+{
+  "$id": "CanonicalDocument.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["document_id", "source_version", "instrument", "checksum_sha256",
+               "language", "jurisdiction", "structure", "created_at", "schema_version"],
+  "properties": {
+    "document_id": { "type": "string", "pattern": "^doc_[a-z0-9]{12}$" },
+    "source_version": { "type": "string", "description": "Pinned identifier, e.g. official OJ reference or publication date" },
+    "instrument": { "type": "string", "enum": ["NIS2", "CRA", "DORA"] },
+    "checksum_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "language": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+    "jurisdiction": { "type": "string", "const": "EU" },
+    "structure": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/anchor_node" }
+    },
+    "raw_storage_uri": { "type": "string", "description": "Immutable object storage pointer to the untouched source artifact" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "schema_version": { "type": "string", "const": "1.0.0" }
+  },
+  "$defs": {
+    "anchor_node": {
+      "type": "object",
+      "required": ["anchor_id", "type", "char_start", "char_end"],
+      "properties": {
+        "anchor_id": { "type": "string", "description": "Stable ID: {document_id}:{source_version}:{structural_path}" },
+        "type": { "type": "string", "enum": ["article", "paragraph", "annex", "table", "footnote", "recital"] },
+        "label": { "type": "string", "description": "e.g. 'Article 21(2)(b)'" },
+        "char_start": { "type": "integer", "minimum": 0 },
+        "char_end": { "type": "integer", "minimum": 0 },
+        "parent_anchor_id": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

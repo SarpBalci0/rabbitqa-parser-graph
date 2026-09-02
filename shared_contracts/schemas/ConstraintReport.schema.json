@@ -1,0 +1,47 @@
+{
+  "$id": "ConstraintReport.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "INTERIM CONTRACT — not present in rabbitqa_spec_v1.0.0.md. The technical spec references ConstraintReport.schema.json in §2.4 (GraphChangeSet.constraint_report) and §5.6 (POST /v1/graph/changesets/{id}/validate response) but never defines its fields. This schema is derived by directly mirroring ValidationReport.schema.json's checks/overall_status shape and enumerating exactly the six named cardinality/ontology rules stated in §2.4's prose. It MUST be confirmed against a spec update (bumping spec_version per §0's change policy) before being treated as final — do not extend or fork it silently.",
+  "type": "object",
+  "required": ["changeset_id", "rules", "overall_status"],
+  "properties": {
+    "changeset_id": { "type": "string" },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule_name", "status", "message"],
+        "properties": {
+          "rule_name": {
+            "type": "string",
+            "enum": [
+              "obligation_derived_from_provision",
+              "obligation_imposes_on_actor",
+              "maps_to_control_endpoint_restriction",
+              "evidenced_by_endpoint_restriction",
+              "no_dangling_node_reference",
+              "relationship_type_pair_allowed"
+            ],
+            "description": "One entry per §2.4 cardinality rule / §3.2 relationship-table conformance check"
+          },
+          "status": { "type": "string", "enum": ["pass", "fail"] },
+          "message": { "type": "string" },
+          "offending_node_ids": { "type": "array", "items": { "type": "string" } },
+          "offending_relationship": {
+            "type": ["object", "null"],
+            "properties": {
+              "from_node_id": { "type": "string" },
+              "to_node_id": { "type": "string" },
+              "type": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "overall_status": {
+      "type": "string",
+      "enum": ["pass", "fail"],
+      "description": "Any single rule fail forces overall_status = fail, which per §2.4 forces GraphChangeSet.status = rejected"
+    }
+  }
+}

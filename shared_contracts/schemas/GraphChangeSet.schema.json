@@ -1,0 +1,50 @@
+{
+  "$id": "GraphChangeSet.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["changeset_id", "base_snapshot_id", "source_clause_ids", "ontology_version",
+               "proposed_nodes", "proposed_relationships", "constraint_report", "status"],
+  "properties": {
+    "changeset_id": { "type": "string" },
+    "base_snapshot_id": { "type": ["string", "null"], "description": "null only for the very first snapshot" },
+    "source_clause_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "ontology_version": { "type": "string" },
+    "proposed_nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["node_id", "type", "properties", "provenance"],
+        "properties": {
+          "node_id": { "type": "string" },
+          "type": { "type": "string", "enum": ["Regulation","Provision","Definition","Obligation","Actor",
+                     "Action","Condition","Exception","Deadline","Control","Risk","EvidenceRequirement",
+                     "Asset","System","API","Dataset","TestAsset","Agent"] },
+          "properties": { "type": "object" },
+          "provenance": { "type": "object", "required": ["clause_id"], "properties": { "clause_id": { "type": "string" } } }
+        }
+      }
+    },
+    "proposed_relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from_node_id", "to_node_id", "type", "provenance"],
+        "properties": {
+          "from_node_id": { "type": "string" },
+          "to_node_id": { "type": "string" },
+          "type": { "type": "string", "enum": ["DERIVED_FROM","IMPOSES_ON","REQUIRES","CONDITIONED_BY",
+                    "EXCEPTION_TO","REFERENCES","DEFINES","AMENDS","SUPERSEDES","APPLIES_TO",
+                    "MAPS_TO_CONTROL","AFFECTS_ASSET","SATISFIED_BY","EVIDENCED_BY"] },
+          "valid_from": { "type": "string", "format": "date" },
+          "provenance": { "type": "object" }
+        }
+      }
+    },
+    "superseded_assertions": { "type": "array", "items": { "type": "string" } },
+    "constraint_report": {
+      "$ref": "ConstraintReport.schema.json",
+      "$comment": "ConstraintReport.schema.json is an INTERIM contract (see that file's own $comment) — not defined in rabbitqa_spec_v1.0.0.md itself. Confirm against a spec update before treating as final."
+    },
+    "status": { "type": "string", "enum": ["draft", "validated", "approved", "rejected", "published"] }
+  }
+}

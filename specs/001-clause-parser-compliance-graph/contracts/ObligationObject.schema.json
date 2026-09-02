@@ -1,0 +1,93 @@
+{
+  "$id": "ObligationObject.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["identity", "source_evidence", "legal_semantics", "references", "governance"],
+  "properties": {
+    "identity": {
+      "type": "object",
+      "required": ["document_id", "source_version", "language", "jurisdiction",
+                   "instrument", "clause_id", "schema_version"],
+      "properties": {
+        "document_id": { "type": "string" },
+        "source_version": { "type": "string" },
+        "language": { "type": "string" },
+        "jurisdiction": { "type": "string", "const": "EU" },
+        "instrument": { "type": "string", "enum": ["NIS2", "CRA", "DORA"] },
+        "clause_id": { "type": "string", "pattern": "^[^:]+:[^:]+:.+$",
+                       "description": "MUST be derived from identity + structural anchor, never from model output. Syntactic shape only: two non-empty colon-delimited segments (document_id, source_version) followed by a structural-path suffix. JSON Schema's pattern keyword cannot reference a sibling property's value, so the semantic requirement — that the first two segments equal this record's own document_id and source_version — is a cross-field invariant, enforced in code (shared_contracts/py/invariants.py:assert_clause_id_derivation), analogous to the evidence-replay invariant in §2.2's numbered list (also cross-field). Matches rabbitqa_spec_v1.0.0.md as of spec_version 1.0.1 (§12 changelog)." },
+        "schema_version": { "type": "string", "const": "1.0.0" }
+      }
+    },
+    "source_evidence": {
+      "type": "object",
+      "required": ["anchor_id", "char_start", "char_end", "verbatim_text", "evidence_hash"],
+      "properties": {
+        "anchor_id": { "type": "string" },
+        "char_start": { "type": "integer" },
+        "char_end": { "type": "integer" },
+        "verbatim_text": { "type": "string", "description": "MUST be an exact substring of the CanonicalDocument at [char_start, char_end)" },
+        "evidence_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "SHA-256 of verbatim_text" }
+      }
+    },
+    "legal_semantics": {
+      "type": "object",
+      "required": ["norm_type", "actor", "modality", "action", "object", "scope"],
+      "properties": {
+        "norm_type": { "type": "string", "enum": ["obligation", "prohibition", "permission", "definition_only"] },
+        "actor": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "modality": { "type": "string", "enum": ["shall", "must", "may", "should"] },
+        "action": { "type": "string" },
+        "object": { "type": "string" },
+        "scope": { "type": "string" },
+        "trigger": { "type": ["string", "null"] },
+        "deadline": {
+          "type": ["object", "null"],
+          "properties": {
+            "type": { "type": "string", "enum": ["absolute_date", "relative_period", "recurring"] },
+            "value": { "type": "string" },
+            "normalized_iso": { "type": ["string", "null"] }
+          }
+        },
+        "frequency": { "type": ["string", "null"] },
+        "conditions": { "type": "array", "items": { "type": "string" } },
+        "exceptions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "references": {
+      "type": "object",
+      "properties": {
+        "definition_links": { "type": "array", "items": { "type": "string" } },
+        "related_articles": { "type": "array", "items": { "type": "string" } },
+        "annex_references": { "type": "array", "items": { "type": "string" } },
+        "resolved_target_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "required": ["review_status", "revision_history"],
+      "properties": {
+        "field_confidence": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 } },
+        "ambiguity_flag": { "type": "boolean", "default": false },
+        "inference_flag": { "type": "boolean", "default": false },
+        "model_version": { "type": "string" },
+        "prompt_version": { "type": "string" },
+        "review_status": { "type": "string", "enum": ["pending", "accepted", "edited", "rejected", "escalated"] },
+        "revision_history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["reviewer_id", "timestamp", "action", "rationale"],
+            "properties": {
+              "reviewer_id": { "type": "string" },
+              "timestamp": { "type": "string", "format": "date-time" },
+              "action": { "type": "string", "enum": ["accept", "edit", "reject", "escalate"] },
+              "rationale": { "type": "string", "minLength": 1 },
+              "diff": { "type": ["object", "null"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

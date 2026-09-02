@@ -1,0 +1,43 @@
+[project]
+name = "rabbitqa"
+version = "0.1.0"
+description = "RabbitQA Clause Parser & Compliance Knowledge Graph"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.9",
+    "jsonschema>=4.23",
+    "referencing>=0.35",
+    "neo4j>=5.24",
+    "sqlalchemy>=2.0",
+    "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.27",
+    "ruff>=0.6",
+    "black>=24.8",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.pytest.ini_options]
+testpaths = ["clause_parser/tests", "compliance_graph/tests", "shared_contracts/tests", "llm_gateway/tests", "reviewer_ui/tests", "evaluation/tests"]
+asyncio_mode = "auto"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["shared_contracts*", "clause_parser*", "compliance_graph*", "llm_gateway*"]

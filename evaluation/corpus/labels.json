@@ -1,0 +1,236 @@
+{
+  "$comment": "Hand-authored ground truth for synthetic_instrument_v1.txt (see README.md — this is synthetic fixture data, not real regulatory text). Keyed by structural_path (article-N/paragraph-M), which matches the suffix of the pipeline's own deterministically-derived anchor_id, so labels don't need to be re-derived if document_id/source_version change between runs. 26 clauses across 6 articles: 19 genuinely normative, 3 planted false positives (modal verb present but not a real obligation), 4 true negatives (no modal verb at all).",
+  "$core_field_matching_note": "expected_core_fields.action/object are genuinely-correct short phrases, authored by reading each clause's text — NOT tuned to match clause_parser/src/agents/extraction_agent.py's actual output. That fixture's action field is literally the entire verbatim sentence (span_text.strip()[:200]) and its object field is literally the structural anchor_label (e.g. 'Article 1(1)') — neither is a real semantic extraction. Matching is EXACT (case-insensitive, whitespace-normalized), deliberately not lenient/substring-based, so core-field F1 honestly reflects that this fixture extractor has no real action/object extraction capability, only actor/modality pattern-matching. A low F1 on action/object is the correct, expected result of this fixture, not a harness bug.",
+  "$complex_field_matching_note": "expected_complex_fields (conditions/exceptions/deadline_iso/related_articles) are genuinely-correct values, authored independently of extraction_agent.py's/resolver.py's actual regex-based logic. Two clauses (article-1/paragraph-1, article-4/paragraph-1) use a TRAILING 'main-clause, where X' condition pattern that the extractor's condition regex does not handle (it only recognizes a LEADING 'Where X, and where Y, main-clause' chain) — their expected conditions are populated anyway and are EXPECTED to legitimately score as a miss, not a harness bug. article-1/paragraph-3's expected deadline_iso ('P30D') is similarly expected to miss: the action field's 200-character truncation of the verbatim sentence cuts off 'within 30 days' before the deadline regex ever sees it. Both are real, documented fixture limitations, not corpus/harness errors — see clause_parser/src/agents/extraction_agent.py and resolver.py's own comments for the underlying cause.",
+  "clauses": {
+    "article-1/paragraph-1": {
+      "is_normative": true,
+      "category": "core_case",
+      "expected_core_fields": { "actor": ["operator"], "modality": "shall", "action": "notify the competent authority", "object": "the competent authority" },
+      "expected_complex_fields": { "conditions": ["the incident has a material impact on service continuity"], "exceptions": [], "deadline_iso": "PT72H", "related_articles": [] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Baseline normative obligation. Trailing condition pattern the extractor doesn't capture (see $complex_field_matching_note)."
+    },
+    "article-1/paragraph-2": { "is_normative": false, "category": "hard_negative", "notes": "No modal verb; background/purpose text only." },
+    "article-1/paragraph-3": {
+      "is_normative": true,
+      "category": "nested_condition",
+      "expected_core_fields": { "actor": ["operator", "manufacturer"], "modality": "shall", "action": "submit a corrective action report", "object": "a corrective action report" },
+      "expected_complex_fields": { "conditions": ["the operator is a manufacturer", "the affected product has already been recalled under a separate procedure"], "exceptions": [], "deadline_iso": "P30D", "related_articles": [] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Compound leading conditions. Deadline is expected to miss (200-char action truncation cuts off 'within 30 days' — see $complex_field_matching_note)."
+    },
+    "article-1/paragraph-4": {
+      "is_normative": true,
+      "category": "shared_exception",
+      "expected_core_fields": { "actor": ["operator", "CSIRT"], "modality": "shall", "action": "notify the CSIRT", "object": "the CSIRT" },
+      "expected_complex_fields": { "conditions": [], "exceptions": ["the incident has already been reported to the competent authority under Article 1(1)"], "deadline_iso": "PT24H", "related_articles": ["Article 1(1)"] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Exception references a specific earlier clause by number (cross-reference + exception combined)."
+    },
+    "article-1/paragraph-5": { "is_normative": false, "category": "hard_negative_definitional", "notes": "Contains 'should' but explicitly disclaims imposing any independent obligation — a naive keyword detector is EXPECTED to mis-flag this as normative." },
+    "article-2/paragraph-1": {
+      "is_normative": true,
+      "category": "long_cross_reference",
+      "expected_core_fields": { "actor": ["provider"], "modality": "must", "action": "maintain records of all incidents", "object": "records of all incidents" },
+      "expected_complex_fields": { "conditions": [], "exceptions": [], "deadline_iso": null, "related_articles": ["Article 1(1)"] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "References Article 1(1) by number; the referenced clause is not adjacent."
+    },
+    "article-2/paragraph-2": { "is_normative": false, "category": "hard_negative", "notes": "Exemption condition, not an obligation; no modal verb of its own." },
+    "article-2/paragraph-3": { "is_normative": false, "category": "hard_negative_definitional", "notes": "Contains 'shall' only in a definitional sense ('X shall mean...'), not as an obligation — planted false positive." },
+    "article-2/paragraph-4": {
+      "is_normative": true,
+      "category": "exception",
+      "expected_core_fields": { "actor": ["provider", "competent authority"], "modality": "shall", "action": "retain incident records", "object": "incident records" },
+      "expected_complex_fields": { "conditions": [], "exceptions": ["retention is prohibited by another applicable law"], "deadline_iso": null, "related_articles": [] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "'except where X' — regression-tested to NOT also be double-counted as a condition (see extraction_agent.py's _CONDITION_RE fix)."
+    },
+    "article-2/paragraph-5": {
+      "is_normative": true,
+      "category": "compound_obligation",
+      "expected_core_fields": { "actor": ["unspecified_actor"], "modality": "shall", "action": "be protected against unauthorised access using industry-standard encryption", "object": "records maintained under Article 2(1)" },
+      "expected_complex_fields": { "conditions": [], "exceptions": [], "deadline_iso": null, "related_articles": ["Article 2(1)"] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Two obligations in one sentence (protect + review annually); passive voice, no controlled-vocabulary actor named, so 'unspecified_actor' is the genuinely correct actor value here."
+    },
+    "article-3/paragraph-1": {
+      "is_normative": true,
+      "category": "core_case",
+      "expected_core_fields": { "actor": ["essential entity"], "modality": "shall", "action": "implement appropriate technical and organisational measures", "object": "technical and organisational measures" },
+      "expected_complex_fields": { "conditions": [], "exceptions": [], "deadline_iso": null, "related_articles": [] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Baseline normative obligation."
+    },
+    "article-3/paragraph-2": {
+      "is_normative": true,
+      "category": "core_case",
+      "expected_core_fields": { "actor": ["competent authority"], "modality": "may", "action": "issue further guidance", "object": "further guidance on the measures" },
+      "expected_complex_fields": { "conditions": [], "exceptions": [], "deadline_iso": null, "related_articles": ["Article 3(1)"] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Permission, not obligation (norm_type should be 'permission')."
+    },
+    "article-3/paragraph-3": { "is_normative": false, "category": "hard_negative", "notes": "Savings/non-derogation clause — does not impose an obligation on any actor, despite containing 'should'. Planted false positive." },
+    "article-3/paragraph-4": {
+      "is_normative": true,
+      "category": "nested_condition",
+      "expected_core_fields": { "actor": ["essential entity", "competent authority"], "modality": "shall", "action": "notify each competent authority separately", "object": "each competent authority" },
+      "expected_complex_fields": { "conditions": ["the essential entity operates in more than one Member State", "the relevant competent authorities have not agreed on a lead authority"], "exceptions": [], "deadline_iso": null, "related_articles": [] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Compound leading conditions."
+    },
+    "article-3/paragraph-5": {
+      "is_normative": true,
+      "category": "compound_obligation",
+      "expected_core_fields": { "actor": ["essential entity", "competent authority"], "modality": "shall", "action": "conduct a risk assessment", "object": "a risk assessment" },
+      "expected_complex_fields": { "conditions": [], "exceptions": ["the competent authority has waived this requirement in writing"], "deadline_iso": "P15D", "related_articles": [] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Two obligations (assess + report) plus a deadline and an exception in one sentence."
+    },
+    "article-4/paragraph-1": {
+      "is_normative": true,
+      "category": "amendment_scenario",
+      "expected_core_fields": { "actor": ["operator"], "modality": "shall", "action": "notify the competent authority", "object": "the competent authority" },
+      "expected_complex_fields": { "conditions": ["the incident has a material impact on service continuity"], "exceptions": [], "deadline_iso": "PT24H", "related_articles": ["Article 1(1)"] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Amends Article 1(1)'s deadline from 72 to 24 hours — exercises AMENDS (§3.2: Provision->Provision) once mapped to the graph. Trailing condition pattern the extractor doesn't capture, same as article-1/paragraph-1."
+    },
+    "article-5/paragraph-1": {
+      "is_normative": true,
+      "category": "core_case",
+      "expected_core_fields": { "actor": ["important entity"], "modality": "shall", "action": "assess the cybersecurity risk", "object": "the cybersecurity risk posed by its direct suppliers and service providers" },
+      "expected_complex_fields": { "conditions": [], "exceptions": [], "deadline_iso": null, "related_articles": [] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Baseline supply-chain obligation. 'service providers' contains the controlled-vocabulary substring 'provider', so the fixture actor extractor genuinely (correctly, per its own substring-match design) also returns 'provider' alongside 'important entity'."
+    },
+    "article-5/paragraph-2": {
+      "is_normative": true,
+      "category": "nested_condition",
+      "expected_core_fields": { "actor": ["important entity"], "modality": "shall", "action": "conduct enhanced due diligence", "object": "enhanced due diligence" },
+      "expected_complex_fields": { "conditions": ["a supplier has previously been subject to a significant incident"], "exceptions": ["the supplier has since obtained independent security certification"], "deadline_iso": null, "related_articles": [] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Both a leading condition AND a trailing exception in the same sentence."
+    },
+    "article-5/paragraph-3": { "is_normative": false, "category": "hard_negative", "notes": "Explicitly disclaims imposing any obligation; no modal verb." },
+    "article-5/paragraph-4": {
+      "is_normative": true,
+      "category": "core_case",
+      "expected_core_fields": { "actor": ["important entity"], "modality": "must", "action": "require its suppliers to notify it", "object": "its suppliers" },
+      "expected_complex_fields": { "conditions": [], "exceptions": [], "deadline_iso": "PT48H", "related_articles": [] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Hour-based deadline (exercises the PT#H ISO-8601 time-designator fix)."
+    },
+    "article-5/paragraph-5": {
+      "is_normative": true,
+      "category": "compound_obligation",
+      "expected_core_fields": { "actor": ["unspecified_actor"], "modality": "shall", "action": "be subject to on-site audits", "object": "on-site audits" },
+      "expected_complex_fields": { "conditions": [], "exceptions": ["national security considerations apply"], "deadline_iso": null, "related_articles": [] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Two obligations (audits + cooperation) plus an exception; passive voice, no controlled-vocabulary actor named."
+    },
+    "article-6/paragraph-1": {
+      "is_normative": true,
+      "category": "core_case",
+      "expected_core_fields": { "actor": ["essential entity"], "modality": "shall", "action": "approve the cybersecurity risk-management measures", "object": "the cybersecurity risk-management measures" },
+      "expected_complex_fields": { "conditions": [], "exceptions": [], "deadline_iso": null, "related_articles": ["Article 3(1)"] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Cross-references an earlier article."
+    },
+    "article-6/paragraph-2": {
+      "is_normative": true,
+      "category": "core_case",
+      "expected_core_fields": { "actor": ["unspecified_actor"], "modality": "shall", "action": "follow training", "object": "training to gain sufficient knowledge and skills" },
+      "expected_complex_fields": { "conditions": [], "exceptions": [], "deadline_iso": null, "related_articles": [] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "'Members of the management body' is not in the controlled vocabulary, so 'unspecified_actor' is the genuinely correct actor value."
+    },
+    "article-6/paragraph-3": {
+      "is_normative": true,
+      "category": "core_case",
+      "expected_core_fields": { "actor": ["competent authority", "essential entity"], "modality": "may", "action": "impose administrative fines", "object": "administrative fines" },
+      "expected_complex_fields": { "conditions": [], "exceptions": [], "deadline_iso": null, "related_articles": ["Article 6(1)", "Article 6(2)"] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Two cross-references in one clause."
+    },
+    "article-6/paragraph-4": { "is_normative": false, "category": "hard_negative", "notes": "Scope-limiting exclusion clause; no modal verb of its own." },
+    "article-6/paragraph-5": {
+      "is_normative": true,
+      "category": "nested_condition",
+      "expected_core_fields": { "actor": ["essential entity", "competent authority"], "modality": "shall", "action": "be presumed", "object": "the management body's approval" },
+      "expected_complex_fields": { "conditions": ["the essential entity is part of a group", "the parent undertaking has already approved equivalent measures at group level"], "exceptions": ["a competent authority objects in writing within 30 days"], "deadline_iso": null, "related_articles": ["Article 6(1)"] },
+      "expected_graph": { "node_types": ["Obligation", "Provision", "Actor"], "edge_types": ["DERIVED_FROM", "IMPOSES_ON"] },
+      "notes": "Last paragraph in the document, immediately followed by two Annexes — regression-tested to confirm its span/verbatim_text does NOT swallow the trailing annex content (see canonicalizer.py's document_ceiling fix). Compound leading conditions plus a trailing exception plus two cross-references."
+    }
+  },
+  "competency_queries": [
+    {
+      "query_id": "cq-1",
+      "clause_structural_path": "article-1/paragraph-1",
+      "fixture_mapping": {
+        "control_id": "ctrl-cq1", "control_name": "Incident notification control",
+        "asset_id": "asset-cq1", "asset_name": "Incident reporting system", "asset_type": "system",
+        "evidence_id": "ev-cq1", "evidence_description": "Notification submission log",
+        "test_asset_id": "ta-cq1", "test_asset_name": "Sampled notification log entry"
+      },
+      "expected_result": { "count": 1, "review_status": "accepted", "path_length": 6, "verbatim_text_nonempty": true }
+    },
+    {
+      "query_id": "cq-2",
+      "clause_structural_path": "article-2/paragraph-1",
+      "fixture_mapping": {
+        "control_id": "ctrl-cq2", "control_name": "Incident record retention control",
+        "asset_id": "asset-cq2", "asset_name": "Incident records archive", "asset_type": "dataset",
+        "evidence_id": "ev-cq2", "evidence_description": "Retention policy attestation",
+        "test_asset_id": "ta-cq2", "test_asset_name": "Sampled retained record"
+      },
+      "expected_result": { "count": 1, "review_status": "accepted", "path_length": 6, "verbatim_text_nonempty": true }
+    },
+    {
+      "query_id": "cq-3",
+      "clause_structural_path": "article-3/paragraph-1",
+      "fixture_mapping": {
+        "control_id": "ctrl-cq3", "control_name": "Risk management control",
+        "asset_id": "asset-cq3", "asset_name": "Network and information system", "asset_type": "system",
+        "evidence_id": "ev-cq3", "evidence_description": "Risk management measures documentation",
+        "test_asset_id": "ta-cq3", "test_asset_name": "Sampled risk assessment record"
+      },
+      "expected_result": { "count": 1, "review_status": "accepted", "path_length": 6, "verbatim_text_nonempty": true }
+    },
+    {
+      "query_id": "cq-4",
+      "clause_structural_path": "article-5/paragraph-1",
+      "fixture_mapping": {
+        "control_id": "ctrl-cq4", "control_name": "Supplier risk assessment control",
+        "asset_id": "asset-cq4", "asset_name": "Supplier management system", "asset_type": "system",
+        "evidence_id": "ev-cq4", "evidence_description": "Supplier risk assessment report",
+        "test_asset_id": "ta-cq4", "test_asset_name": "Sampled supplier assessment"
+      },
+      "expected_result": { "count": 1, "review_status": "accepted", "path_length": 6, "verbatim_text_nonempty": true }
+    },
+    {
+      "query_id": "cq-5",
+      "clause_structural_path": "article-5/paragraph-4",
+      "fixture_mapping": {
+        "control_id": "ctrl-cq5", "control_name": "Supplier incident notification control",
+        "asset_id": "asset-cq5", "asset_name": "Supply chain monitoring system", "asset_type": "system",
+        "evidence_id": "ev-cq5", "evidence_description": "Supplier notification log",
+        "test_asset_id": "ta-cq5", "test_asset_name": "Sampled supplier notification"
+      },
+      "expected_result": { "count": 1, "review_status": "accepted", "path_length": 6, "verbatim_text_nonempty": true }
+    },
+    {
+      "query_id": "cq-6",
+      "clause_structural_path": "article-6/paragraph-1",
+      "fixture_mapping": {
+        "control_id": "ctrl-cq6", "control_name": "Management body approval control",
+        "asset_id": "asset-cq6", "asset_name": "Governance record system", "asset_type": "dataset",
+        "evidence_id": "ev-cq6", "evidence_description": "Management body approval minutes",
+        "test_asset_id": "ta-cq6", "test_asset_name": "Sampled approval record"
+      },
+      "expected_result": { "count": 1, "review_status": "accepted", "path_length": 6, "verbatim_text_nonempty": true }
+    }
+  ],
+  "annex_present": true,
+  "annex_note": "Annex I and Annex II are present in the raw text for lexical/annotation purposes but are NOT structurally recognized as distinct 'annex' anchor types by this synthetic fixture's canonicalizer pass — clause_parser/src/canonicalize/canonicalizer.py currently only detects 'Article N' / numbered-paragraph patterns (see that module's own docstring: 'unmatched text becomes a single top-level article anchor... extending its coverage is future work'). Tracked as a corpus/parser coverage gap, not silently ignored. A related, more severe consequence (the LAST article's last paragraph silently swallowing trailing annex text into its own evidence) was found and FIXED separately — see canonicalizer.py's document_ceiling / _ANNEX_HEADING_RE."
+}
