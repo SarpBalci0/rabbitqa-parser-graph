@@ -1,5 +1,5 @@
 # RabbitQA — Clause Parser & Compliance Knowledge Graph
-## Technical Specification v1.0.4
+## Technical Specification v1.1.0
 
 **Status:** DRAFT — pending sign-off
 **Scope:** Standalone module pair only (`clause_parser`, `compliance_graph`, `shared_contracts`, `reviewer_ui`, `evaluation`)
@@ -13,7 +13,7 @@
 
 | Field | Value |
 |---|---|
-| spec_version | 1.0.4 |
+| spec_version | 1.1.0 |
 | covers report | RabbitQA Standalone Implementation Report, Aug 2026 |
 | change policy | Any schema, endpoint, or acceptance-criterion change bumps spec_version (semver) and requires a changelog entry in §12 |
 | source of truth for schemas | `/shared_contracts/schemas/*.json` — MUST be generated from this spec, never hand-diverged |
@@ -37,6 +37,7 @@
 | Multi-tenant SaaS concerns (billing, org management) | Out of scope; single-tenant local deployment only |
 | Non-English source languages in v1 | `language` field exists in schema for forward-compatibility but pipeline is validated only against English source text in v1 |
 | Model fine-tuning / training custom extraction models | v1 uses prompted LLMs behind the gateway only |
+| OCR / scanned (image-only) PDF ingestion | v1 supports PDF ingestion only where a text layer is extractable (§2.1, §7). A PDF with no extractable text layer MUST be rejected at ingress, never processed via OCR — OCR introduces a new dependency and a new trust boundary and is deferred to a future spec version (added spec_version 1.1.0, §12 changelog) |
 
 If an implementer wants to build any of the above, it requires a new spec section and version bump — not silent inclusion.
 
@@ -66,8 +67,18 @@ All contracts live under `shared_contracts/schemas/`. Every object MUST include 
       "items": { "$ref": "#/$defs/anchor_node" }
     },
     "raw_storage_uri": { "type": "string", "description": "Immutable object storage pointer to the untouched source artifact" },
+    "source_format": { "type": "string", "enum": ["text", "pdf"], "default": "text", "description": "Format of the source artifact at raw_storage_uri. Optional; absent is equivalent to \"text\" for backward compatibility with documents registered before spec_version 1.1.0." },
+    "extraction_metadata": {
+      "type": ["object", "null"],
+      "description": "Present only when source_format is \"pdf\". Records how canonical text was extracted, for provenance and auditability.",
+      "properties": {
+        "extraction_method": { "type": "string", "description": "e.g. the name/version of the deterministic PDF text-extraction library used" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1, "description": "Deterministic extraction-quality score computed by the extraction step, per §7's rejection threshold" },
+        "warnings": { "type": "array", "items": { "type": "string" }, "description": "Non-fatal extraction artifacts detected, e.g. \"possible multi-column reordering\", \"hyphenation-break rejoin applied\"" }
+      }
+    },
     "created_at": { "type": "string", "format": "date-time" },
-    "schema_version": { "type": "string", "const": "1.0.0" }
+    "schema_version": { "type": "string", "const": "1.1.0" }
   },
   "$defs": {
     "anchor_node": {
@@ -88,8 +99,11 @@ All contracts live under `shared_contracts/schemas/`. Every object MUST include 
 
 **Invariants:**
 - `anchor_id` generation MUST be a pure function of `(document_id, source_version, structural_path)`. It MUST NOT depend on model output, run timestamp, or random seed. Re-ingesting the identical source artifact MUST yield byte-identical anchor IDs (idempotency — testable, see §9).
-- `char_start`/`char_end` are offsets into the canonicalized text, not the raw file bytes. Canonicalization (whitespace normalization, encoding fix) MUST NOT alter legal text content — only formatting.
+- `char_start`/`char_end` are offsets into the canonicalized text, not the raw file bytes. Canonicalization (whitespace normalization, encoding fix) MUST NOT alter legal text content — only formatting. This holds identically regardless of `source_format`: for `source_format: "pdf"`, `char_start`/`char_end` are offsets into the canonicalized text produced *after* PDF text extraction, never into PDF byte offsets, page numbers, or on-page coordinate positions. No downstream consumer of `structure` (detection, extraction, validation, review, export) MAY interpret these offsets as anything other than positions in the canonicalized text string.
 - `raw_storage_uri` content MUST be write-once. Any write attempt to an existing key MUST fail.
+- **PDF extraction is a distinct, deterministic step that MUST run before canonicalization, never inside it.** When `source_format` is `"pdf"`, the pipeline MUST: (1) extract a text layer from the PDF using a deterministic extraction method (no LLM call — consistent with §4.1 step 1's "Fully deterministic, no LLM" rule, which this extension does not weaken); (2) compute an `extraction_metadata.confidence` score and any `warnings` (e.g. detected multi-column reordering, hyphenation-break artifacts, page-break noise) as part of that same deterministic step; (3) only then hand the extracted text to the existing canonicalization step (§4.1 step 1), which applies unchanged (whitespace/encoding normalization only, content MUST NOT be altered).
+- **Extraction-quality gate.** If the PDF has no extractable text layer (zero characters extracted — the scanned/image-only case) or `extraction_metadata.confidence` falls below a configured threshold, `CanonicalDocument` registration MUST fail (see §5.1's `422` cases) and no `CanonicalDocument` record MUST be created. A low-confidence or empty extraction MUST NOT be registered and silently offered to the parser pipeline as if it were reliable text — this is a hard gate, not a warning, mirroring the hard-gate language already used for the export provenance chain (§7).
+- OCR MUST NOT be attempted at any point in this pipeline (§1.2 non-goal). A PDF with no extractable text layer is a rejection, not a trigger for an OCR fallback.
 
 ### 2.2 `ObligationObject`
 
@@ -454,9 +468,16 @@ All endpoints return `application/json`. Errors follow:
 | 500 | Unhandled — MUST still log full provenance chain before returning |
 
 ### 5.1 `POST /v1/documents`
-Request: `{ "instrument": "NIS2"|"CRA"|"DORA", "source_artifact_uri": str, "source_version": str }`
+Request: `{ "instrument": "NIS2"|"CRA"|"DORA", "source_artifact_uri": str, "source_version": str, "source_format": "text"|"pdf" }`
+`source_format` is OPTIONAL; if absent it MUST be treated as `"text"` (backward-compatible with callers written before spec_version 1.1.0). `source_artifact_uri` keeps the same shape (an opaque URI pointer) regardless of `source_format` — it always points at the untouched raw artifact; the bytes at that URI are interpreted as plain text or as a PDF according to `source_format`, and stored unmodified as `raw_storage_uri` either way (§7 malware-scan and checksum rules apply identically to both formats).
+
 Response `201`: `CanonicalDocument`
-Errors: `400` if checksum cannot be computed. Registration is idempotent by content, scoped to `(instrument, source_version)`:
+Errors:
+- `400` if checksum cannot be computed, or if `source_format` is present and is not one of `"text"`/`"pdf"`.
+- `422` with `error.code: "PDF_NO_TEXT_LAYER"` if `source_format` is `"pdf"` and zero characters of text can be extracted (scanned/image-only PDF, no text layer). No `CanonicalDocument` is created.
+- `422` with `error.code: "PDF_EXTRACTION_LOW_CONFIDENCE"` if `source_format` is `"pdf"`, text is extracted, but the deterministic extraction step's `extraction_metadata.confidence` (§2.1) falls below the configured threshold. `error.details` MUST include the computed `confidence` value and any `warnings`. No `CanonicalDocument` is created.
+
+Registration is idempotent by content, scoped to `(instrument, source_version)` — this rule is unchanged by `source_format` and applies to the checksum of the raw artifact bytes, not the extracted text:
 - Re-posting content whose checksum matches the already-registered `(instrument, source_version)` returns the existing `CanonicalDocument` with `200`, not a duplicate.
 - Re-posting content whose checksum does NOT match an already-registered `(instrument, source_version)` is a genuine conflict — a pinned source_version MUST be immutable once registered (§1.1) — and returns `409`. The caller MUST register revised content under a new `source_version`, not overwrite the existing one.
 
@@ -518,7 +539,7 @@ Each zone below maps to enforceable controls, not aspirations. A code review MUS
 
 | Zone | Trust level | MUST |
 |---|---|---|
-| Document ingress | Untrusted | Reject uploads exceeding a configured size limit; validate content-type against an allow-list; run malware scan before persisting; compute checksum before any parsing step touches the content |
+| Document ingress | Untrusted | Reject uploads exceeding **25 MB**, a fixed limit for both `text` and `pdf` source formats (testable — not a configuration value); validate content-type against an allow-list explicitly including `text/plain` and `application/pdf` (no other content-type is accepted in v1); run malware scan before persisting; compute checksum before any parsing step touches the content; for `source_format: "pdf"`, run the deterministic PDF text-extraction step (§2.1) after the malware scan and before canonicalization, and reject at ingress (per §5.1's `422` cases) any PDF with no extractable text layer or with extraction confidence below a configured threshold (deliberately left as a configuration decision, consistent with the LLM provider allow-list in §10) — OCR MUST NOT be attempted as a fallback (§1.2) |
 | Workflow service | Controlled | Every mutating request carries an idempotency key; rate limits enforced per client; every request is trace-tagged and the trace_id is propagated into every downstream log line and provenance record |
 | LLM gateway | Isolated inference | Model provider is selected from an explicit allow-list (no arbitrary endpoint); every agent call logs `{model_version, prompt_version, input_hash, output_hash, context_hash}`; agents have zero write-capable tools (§4.4) |
 | Graph & registries | Trusted | All graph mutations are transactional; constraint checks run inside the same transaction as the write, not before-and-hope; audit events are append-only (no update/delete grants on the audit table) |
@@ -636,6 +657,7 @@ pinned source → registered `CanonicalDocument` → parsed + validated `Obligat
 | 1.0.2 | 2026-09-01 | Clarification: §5.1 `POST /v1/documents` stated both "409 if (document_id-equivalent, source_version) already registered" and "re-posting identical bytes returns 200" in the same sentence, without distinguishing the genuine-conflict case (same instrument+source_version, different content) from the idempotent-match case (same content). Discovered during implementation when no layer — spec.md, contracts/api.md, or the document-registration code — had a defined behavior for re-registering different content under an already-used source_version. Disambiguated: `200` on checksum match; `409` on checksum mismatch for an already-registered `(instrument, source_version)`, since a pinned source_version MUST be immutable once registered (§1.1) — revised content requires a new source_version. No schema or acceptance-criterion change; endpoint behavior only. |
 | 1.0.3 | 2026-09-01 | Housekeeping, discovered by a full spec-code synchronization audit: §10 explicitly requires its open questions to be "resolved and logged in §12" before implementation begins, but questions #1 (graph store), #3 (corpus scope), and #4 (four-eyes review) had been resolved during specification (`/speckit-specify`, recorded in `specs/001-clause-parser-compliance-graph/spec.md`'s "Resolved Clarifications") without ever being logged back into this document, as §10 itself requires. §10's table now marks each question's status and points to where it was resolved. No schema, endpoint, or acceptance-criterion content changed — this entry exists to satisfy §10's own logging requirement, not to alter any rule. |
 | 1.0.4 | 2026-09-01 | Clarification: §3.3's canonical proof-path query started with `(regulation:Regulation)<-[:DERIVED_FROM]-(o:Obligation)`, but §3.2's relationship table has never permitted a `DERIVED_FROM` edge from `Obligation` to `Regulation` (only to `Provision`), and no relationship type links `Provision` to `Regulation` either — so the original query was never satisfiable by any graph this ontology actually permits. Discovered during implementation of User Story 4's proof-path query. Corrected to start at `Provision` (the node `Obligation` actually `DERIVED_FROM`s); the `Provision` node's regulation context (`instrument`, `source_version`) is now carried in its own `properties` rather than via a graph edge. §3.2's relationship table itself is unchanged — this is a query-pattern correction, not an ontology rule change — so `ontology_version` (§8) is unaffected. |
+| 1.1.0 | 2026-09-02 | Feature addition: PDF ingestion support. Prior to this version the spec implicitly assumed plain-text source artifacts only; §2.1, §5.1, and §7 now explicitly cover `source_format: "pdf"`. Per §8, this is an additive/optional-field change (minor bump), not a breaking one: `source_format` defaults to `"text"` when absent, so documents and callers predating 1.1.0 remain valid. Changes: (1) §5.1 request body gains an optional `source_format` field (`"text"` \| `"pdf"`); `source_artifact_uri` keeps its existing shape in both cases. (2) §2.1 `CanonicalDocument` gains optional `source_format` and `extraction_metadata` ({`extraction_method`, `confidence`, `warnings`}) fields; `schema_version` const bumped to `"1.1.0"`. A new invariant states PDF text extraction is a distinct, deterministic, no-LLM step that MUST run before canonicalization (never inside it), and that a hard extraction-quality gate — zero extracted text, or confidence below a configured threshold — MUST block `CanonicalDocument` registration entirely rather than register low-quality text; `char_start`/`char_end` are explicitly confirmed to remain offsets into canonicalized text only, never PDF byte/page/coordinate positions, regardless of `source_format`. (3) §5.1 gains two new `422` error cases (`PDF_NO_TEXT_LAYER`, `PDF_EXTRACTION_LOW_CONFIDENCE`) enforcing that gate at the API boundary. (4) §7's Document ingress row now explicitly allow-lists `application/pdf` alongside `text/plain`, and states a fixed, testable 25 MB size limit for both formats (previously stated only as "a configured size limit" with no number at all) — the extraction-confidence threshold, by contrast, is deliberately left as a configuration decision, consistent with how the LLM provider allow-list is handled in §10, and requires the extraction-quality gate to be enforced at ingress. (5) §1.2 non-goals gains an explicit entry: OCR / scanned (image-only) PDF ingestion is out of scope for v1 — a PDF with no text layer is rejected, not OCR'd; introducing OCR would add a new dependency and a new trust boundary and requires its own future spec version. No existing required field, endpoint status code, or acceptance criterion (§9) was removed or retyped; `ontology_version` (§8) is unaffected. |
 
 ---
 
