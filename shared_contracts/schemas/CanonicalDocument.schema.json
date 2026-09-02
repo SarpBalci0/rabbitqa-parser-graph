@@ -16,8 +16,18 @@
       "items": { "$ref": "#/$defs/anchor_node" }
     },
     "raw_storage_uri": { "type": "string", "description": "Immutable object storage pointer to the untouched source artifact" },
+    "source_format": { "type": "string", "enum": ["text", "pdf"], "default": "text", "description": "Format of the source artifact at raw_storage_uri. Optional; absent is equivalent to \"text\" for backward compatibility with documents registered before spec_version 1.1.0." },
+    "extraction_metadata": {
+      "type": ["object", "null"],
+      "description": "Present only when source_format is \"pdf\". Records how canonical text was extracted, for provenance and auditability.",
+      "properties": {
+        "extraction_method": { "type": "string", "description": "e.g. the name/version of the deterministic PDF text-extraction library used" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1, "description": "Deterministic extraction-quality score computed by the extraction step, per §7's rejection threshold" },
+        "warnings": { "type": "array", "items": { "type": "string" }, "description": "Non-fatal extraction artifacts detected, e.g. \"possible multi-column reordering\", \"hyphenation-break rejoin applied\"" }
+      }
+    },
     "created_at": { "type": "string", "format": "date-time" },
-    "schema_version": { "type": "string", "const": "1.0.0" }
+    "schema_version": { "type": "string", "const": "1.1.0" }
   },
   "$defs": {
     "anchor_node": {

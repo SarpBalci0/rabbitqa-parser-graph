@@ -1,5 +1,7 @@
-"""FR-034/§7 Document ingress zone: uploads exceeding the configured size limit
-or failing the content-type allow-list are rejected before checksum/parsing."""
+"""FR-034/§7 Document ingress zone: uploads exceeding the fixed 25 MB size limit
+or failing the content-type allow-list are rejected before checksum/parsing. Per
+rabbitqa_spec_v1.1.0.md §7 (spec_version 1.1.0), the allow-list now includes .pdf
+alongside .txt/.xml/.html."""
 
 import pytest
 
@@ -54,8 +56,8 @@ def test_content_type_check_runs_before_any_file_read():
         _validate_content_type("/this/path/does/not/exist/at/all.exe")
 
 
-def test_allow_listed_content_types_are_exactly_txt_xml_html():
-    assert ALLOWED_CONTENT_TYPES == {".txt", ".xml", ".html"}
+def test_allow_listed_content_types_are_exactly_txt_xml_html_pdf():
+    assert ALLOWED_CONTENT_TYPES == {".txt", ".xml", ".html", ".pdf"}
 
 
 def test_within_limits_and_allow_listed_type_succeeds(tmp_path, session):
