@@ -21,7 +21,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 
 from clause_parser.src.db.obligation_repository import ObligationRepository
-from compliance_graph.src.api import changesets, export, query, snapshots
+from compliance_graph.src.api import changesets, export, query, snapshots, visualization
 from compliance_graph.src.db.neo4j_client import Neo4jClient
 from compliance_graph.src.publisher.neo4j_store import Neo4jGraphStore
 from shared_contracts.py.db import configure, get_engine_singleton, get_session
@@ -51,3 +51,4 @@ app.include_router(changesets.build_router(get_session, _graph_store_factory))
 app.include_router(snapshots.build_router(_graph_store_factory))
 app.include_router(query.build_router(_graph_store_factory, _obligation_repository_factory))
 app.include_router(export.build_router(get_session, _graph_store_factory))
+app.include_router(visualization.build_router(_graph_store_factory, _obligation_repository_factory))
