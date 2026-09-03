@@ -30,6 +30,14 @@ import pypdf
 
 DEFAULT_CONFIDENCE_THRESHOLD = 0.5
 _HYPHEN_BREAK_RE = re.compile(r"[a-z]-\n[a-z]")
+# §2.1 (spec_version 1.1.2): a mid-word break with NO hyphen (e.g. a fixed-width
+# PDF layout wrapping "remote" as "remo" + line break + "te") is not caught by
+# _HYPHEN_BREAK_RE, since there is no hyphen to key off — but it's the same
+# broken-word risk. Flag it (lower confidence, add a warning); never attempt to
+# rejoin, since a legitimate line-final word immediately followed by a line-
+# initial word looks identical to this pattern and rejoining could silently
+# alter legal text content (see §2.1 invariants).
+_BROKEN_WORD_RE = re.compile(r"[a-z]\n[a-z]")
 _REPLACEMENT_CHAR = "�"
 
 
@@ -73,6 +81,10 @@ def _score_confidence(text: str) -> tuple[float, list[str]]:
     if _HYPHEN_BREAK_RE.search(text):
         warnings.append("hyphenation-break artifacts detected")
         confidence -= 0.15
+
+    if _BROKEN_WORD_RE.search(text):
+        warnings.append("possible broken word (mid-word line break without hyphen)")
+        confidence -= 0.2
 
     lines = [line for line in text.split("\n") if line.strip()]
     if lines:

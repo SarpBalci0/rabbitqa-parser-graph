@@ -66,12 +66,20 @@ _CONDITION_RE = re.compile(r"(?:^\d*\.?\s*|,\s+and\s+)[Ww]here\s+([^,]+)")
 _EXCEPTION_RE = re.compile(r"(?:unless|except(?:\s+where)?)\s+(.+?)(?:\.\s*$|\.$)", re.IGNORECASE)
 
 
+def _collapse_whitespace(text: str) -> str:
+    """Matching-only normalization so a PDF-extracted clause's embedded line
+    breaks (e.g. from fixed-width layout wrapping) don't defeat these
+    single-line-oriented regexes; the stored verbatim_text/action fields are
+    never touched, only the text handed to the condition/exception matchers."""
+    return re.sub(r"\s+", " ", text)
+
+
 def _extract_conditions(text: str) -> list[str]:
-    return [m.strip().rstrip(".") for m in _CONDITION_RE.findall(text)]
+    return [m.strip().rstrip(".") for m in _CONDITION_RE.findall(_collapse_whitespace(text))]
 
 
 def _extract_exceptions(text: str) -> list[str]:
-    return [m.strip() for m in _EXCEPTION_RE.findall(text.strip())]
+    return [m.strip() for m in _EXCEPTION_RE.findall(_collapse_whitespace(text.strip()))]
 
 
 def _extract_actor(text: str, controlled_vocabulary: list[str]) -> list[str]:
