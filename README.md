@@ -87,16 +87,26 @@ any derived artifact, with a version bump and changelog entry each time:
 - Agent clients (`clause_parser/src/agents/`, `compliance_graph/src/graph_mapping_agent/`)
   use a fixture, rule-based stand-in (`model_version="fixture-rule-based-v1"`),
   not a live LLM — no live LLM calls run in this pass (see `research.md` §7).
-- **Lower severity.** §2.1's mid-word hard-break detection (spec_version 1.1.2,
-  `clause_parser/src/canonicalize/pdf_extractor.py`'s `_BROKEN_WORD_RE`) is
-  flag-only by design (never auto-rejoins, per that invariant) but has an
-  inherent false-positive risk: a legitimately line-final word immediately
-  followed by a line-initial word is textually indistinguishable from a broken
-  word. This has not yet been empirically bounded against a real PDF corpus —
-  the false-positive rate on genuine (non-fixed-width-wrapped) legal PDFs is
-  unknown. Not urgent (a false positive only lowers `extraction_metadata.confidence`
-  and adds a warning; it never blocks registration on its own unless it pushes
-  confidence below the threshold), but tracked here so it isn't forgotten.
+- **Resolved, spec_version 1.1.3 (previously tracked here as unbounded).** §2.1's
+  mid-word hard-break detection (`clause_parser/src/canonicalize/pdf_extractor.py`'s
+  `_BROKEN_WORD_RE`) was empirically bounded against 491 real, successfully-
+  extracted PDFs: presence-only detection flagged 417/491 files (85%) and 19,938
+  raw matches, of which only 32 were a genuinely broken word (99.8% false
+  positives among classifiable matches) — the check was firing on nearly every
+  real PDF, not a rare edge case. Fixed via `_classify_broken_word_matches`'s
+  dictionary check (rejoined fragment is a real word, left fragment alone is
+  not); re-running the same scan dropped flagged files to 30/491 and matches to
+  33, while still catching known-genuine cases. Remaining, lower-severity
+  caveats: (1) the dictionary check is best-effort — a host with no system word
+  list falls back to the original low-precision presence-only check (see
+  `_load_word_dictionary`'s documented fallback), so `extraction_metadata.confidence`
+  for byte-identical PDF input can differ across hosts depending on local
+  dictionary availability; (2) the classifier itself is a proxy (dictionary
+  membership only, no real linguistic parse) and was not hand-verified against
+  labeled ground truth. Neither is urgent — a false positive/negative here only
+  affects `extraction_metadata.confidence`/`warnings`, never blocks registration
+  outright unless it pushes confidence below the threshold — but both are
+  tracked here so they stay visible.
 
 See `specs/001-clause-parser-compliance-graph/plan.md`'s Complexity Tracking
 table for the full history of every gap found and how each was resolved.
