@@ -87,6 +87,16 @@ any derived artifact, with a version bump and changelog entry each time:
 - Agent clients (`clause_parser/src/agents/`, `compliance_graph/src/graph_mapping_agent/`)
   use a fixture, rule-based stand-in (`model_version="fixture-rule-based-v1"`),
   not a live LLM — no live LLM calls run in this pass (see `research.md` §7).
+- **Lower severity.** §2.1's mid-word hard-break detection (spec_version 1.1.2,
+  `clause_parser/src/canonicalize/pdf_extractor.py`'s `_BROKEN_WORD_RE`) is
+  flag-only by design (never auto-rejoins, per that invariant) but has an
+  inherent false-positive risk: a legitimately line-final word immediately
+  followed by a line-initial word is textually indistinguishable from a broken
+  word. This has not yet been empirically bounded against a real PDF corpus —
+  the false-positive rate on genuine (non-fixed-width-wrapped) legal PDFs is
+  unknown. Not urgent (a false positive only lowers `extraction_metadata.confidence`
+  and adds a warning; it never blocks registration on its own unless it pushes
+  confidence below the threshold), but tracked here so it isn't forgotten.
 
 See `specs/001-clause-parser-compliance-graph/plan.md`'s Complexity Tracking
 table for the full history of every gap found and how each was resolved.
